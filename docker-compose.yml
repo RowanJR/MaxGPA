@@ -1,11 +1,11 @@
 services:
-#  web:
-#    build: .
-#    command: -u app.py
-#    working_dir: /app
-#    ports:
-#      - "5000:5000"
-#    links:
-#      - db
+  web:
+    build: .
+    command: -u app.py
+    working_dir: /app
+    ports:
+      - "5000:5000"
+    links:
+      - db
   db:
     image: mongo:6
