@@ -1,5 +1,5 @@
 
-const API_BASE = '';  // Empty string = same origin as Flask server
+const API_BASE = '';
 
 const MAJOR_LABELS = {
   cs_bs:       'BS Computer Science',
@@ -52,13 +52,13 @@ function renderBarGroup(gradeData) {
     </div>`;
   }
 
-  const values = grades.map(g => gradeData[g] ?? 0);
-  const max    = Math.max(...values, 1);
+  const vals = grades.map(g => gradeData[g] ?? 0);
+  const max = Math.max(...vals, 1);
 
   return `<div class="bar-group">${grades.map((g, i) => `
       <div class="bar-col">
-        <div class="bar-fill ${classes[i]}" style="height:${Math.round((values[i] / max) * MAX_H)}px"
-             title="${g}: ${values[i]}%"></div>
+        <div class="bar-fill ${classes[i]}" style="height:${Math.round((vals[i] / max) * MAX_H)}px"
+             title="${g}: ${vals[i]}%"></div>
         <span class="bar-tick">${g}</span>
       </div>`).join('')}
     </div>`;
@@ -152,9 +152,6 @@ async function handleGenerate() {
   }
 }
 
-// ─────────────────────────────────────────────
-// Validate year range on change
-// ─────────────────────────────────────────────
 document.getElementById('year-from').addEventListener('change', function () {
   const to = document.getElementById('year-to');
   if (parseInt(this.value) >= parseInt(to.value)) {
