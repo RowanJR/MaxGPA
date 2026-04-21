@@ -109,7 +109,6 @@ main{margin-top:1.5rem}
   transition:height .3s
 }
 
-/* Grades */
 .grade-a{background:var(--green)}
 .grade-b{background:var(--blue)}
 .grade-c{background:var(--amber)}
