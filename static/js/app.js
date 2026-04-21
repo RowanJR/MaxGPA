@@ -1,10 +1,9 @@
-
 const API_BASE = '';
 
 const MAJOR_LABELS = {
   cs_bs:       'BS Computer Science',
-  ba_business: 'BA Business Administration',
-  geog_bs:     'BS Geography',
+  bs_business: 'BS Business Administration',
+  geog_bs:     'BS Physics',
 };
 
 
@@ -18,7 +17,6 @@ function showReport(visible) {
   document.getElementById('report-meta').classList.toggle('visible', visible);
   document.getElementById('legend').classList.toggle('visible', visible);
 }
-
 
 function renderSkeletons(count = 4) {
   const area = document.getElementById('skeleton-area');

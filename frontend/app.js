@@ -3,7 +3,7 @@ const API_BASE = '';
 
 const MAJOR_LABELS = {
   cs_bs:       'BS Computer Science',
-  ba_business: 'BA Business Administration',
+  bs_business: 'BS Business Administration',
   geog_bs:     'BS Geography',
 };
 
