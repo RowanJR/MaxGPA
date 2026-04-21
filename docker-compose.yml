@@ -9,3 +9,12 @@ services:
       - db
   db:
     image: mongo:6
+    ports:
+      - "27017:27017"
+
+  importer:
+    build: .
+    command: python import_csv.py
+    working_dir: /app
+    depends_on:
+      - db
