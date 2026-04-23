@@ -68,7 +68,7 @@ def get_class_info(subject, number, startdate, enddate):
         { "professor" : "jane doe", "A" : 0.05, "B" : 0.20, "C" : 0.25, "DNF" : 0.50 }
         ]
 
-    return json.dumps(ret)
+    return flask.jsonify(ret)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
