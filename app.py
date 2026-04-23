@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 mongo_host = os.environ.get('DB_HOST', 'db')
 client = MongoClient(mongo_host, 27017)
-db = client.classesdb
+db = client.maxgpa
 
 season = {"Fall": 0, "Winter": 1, "Spring": 2, 0:"Fall", 1:"Winter", 2:"Spring"}
 
@@ -54,19 +54,30 @@ def home():
 
     return flask.render_template('index.html')
 
+def get_class_list(classlist, startdate, enddate):
+
+    ret = {
+        "PHYS 101" : get_class_info("PHYS", 101, startdate, enddate), 
+        "MATH 101" : get_class_info("MATH", 101, startdate, enddate)
+    }
+
+    return
+
 def get_class_info(subject, number, startdate, enddate):
     dateinterval = date_interval(startdate, enddate)
 
-    results = list(db.classesdb.find({
+    results = list(db.maxgpa.find({
         "SUBJ": subject,
         "NUMB": number,
         "$or": dateinterval
     }))
 
+    
+
     ret = [
         { "professor" : "john smith", "A" : 0.50, "B" : 0.25, "C" : 0.2, "DNF" : 0.05 },
         { "professor" : "jane doe", "A" : 0.05, "B" : 0.20, "C" : 0.25, "DNF" : 0.50 }
-        ]
+    ]
 
     return flask.jsonify(ret)
 

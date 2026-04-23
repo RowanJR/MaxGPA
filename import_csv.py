@@ -27,7 +27,6 @@ GRADE_COLUMNS = {
     "W"
 }
 
-
 def wait_for_mongo():
     while True:
         try:
