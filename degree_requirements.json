@@ -1,0 +1,146 @@
+{
+  "degrees": [
+    {
+      "name": "Bachelor of Science in Business Administration",
+      "courses": [
+        { "code": "BA 101Z", "title": "Introduction to Business", "credits": 4.0 },
+        { "code": "MATH 111Z", "title": "Precalculus I: Functions", "credits": 4.0 },
+        { "code": "EC 201Z", "title": "Principles of Microeconomics", "credits": 4.0 },
+        { "code": "MATH 241", "title": "Calculus for Business and Social Science I", "credits": 4.0 },
+        { "code": "WR 121Z", "title": "Composition I", "credits": 4.0 },
+        { "code": "EC 202Z", "title": "Principles of Macroeconomics", "credits": 4.0 },
+        { "code": "WR 122Z", "title": "Composition II", "credits": 4.0 },
+        { "code": "BA 211Z", "title": "Principles of Financial Accounting", "credits": 4.0 },
+        { "code": "STAT 243Z", "title": "Elementary Statistics I", "credits": 4.0 },
+        { "code": "BA 213Z", "title": "Principles of Managerial Accounting", "credits": 4.0 },
+        { "code": "BA 169Z", "title": "Data Analysis Using Microsoft Excel", "credits": 4.0 },
+        { "code": "BA 308", "title": "Leadership and Communication", "credits": 4.0 },
+        { "code": "OBA 311", "title": "Business Analytics I", "credits": 4.0 },
+        { "code": "MGMT 311", "title": "Managing People in Organizations", "credits": 4.0 },
+        { "code": "OBA 312", "title": "Business Analytics II", "credits": 4.0 },
+        { "code": "FIN 316", "title": "Financial Management", "credits": 4.0 },
+        { "code": "MKTG 311", "title": "Marketing Management", "credits": 4.0 },
+        { "code": "OBA 335", "title": "Operations Management", "credits": 4.0 },
+        { "code": "FIN 311", "title": "Economic Foundations of Competitive Analysis", "credits": 4.0 },
+        { "code": "BA 325", "title": "Business Law and Ethics", "credits": 4.0 },
+        { "code": "BA 322", "title": "Fundamentals of Sustainable Business", "credits": 4.0 },
+        { "code": "BA 453", "title": "Business Strategy and Planning", "credits": 4.0, "note": "Apply for graduation" }
+      ]
+    },
+    {
+      "name": "Bachelor of Science in Computer Science",
+      "courses": [
+        { "code": "CS 122", "title": "Introduction to Programming and Problem Solving", "credits": 4.0, "note": "recommended" },
+        { "code": "MATH 112Z", "title": "Precalculus II: Trigonometry", "credits": 4.0 },
+        { "code": "WR 121Z", "title": "Composition I", "credits": 4.0 },
+        { "code": "CS 210", "title": "Computer Science I", "credits": 4.0 },
+        {
+          "or": [
+            { "code": "MATH 251Z", "title": "Differential Calculus" },
+            { "code": "MATH 246", "title": "Calculus for the Biological Sciences I" }
+          ],
+          "credits": 4.0
+        },
+        {
+          "or": [
+            { "code": "WR 122Z", "title": "Composition II" },
+            { "code": "WR 123", "title": "College Composition III" }
+          ],
+          "credits": 4.0
+        },
+        { "code": "CS 211", "title": "Computer Science II", "credits": 4.0 },
+        {
+          "or": [
+            { "code": "MATH 252Z", "title": "Integral Calculus" },
+            { "code": "MATH 247", "title": "Calculus for the Biological Sciences II" }
+          ],
+          "credits": 4.0
+        },
+        { "code": "CS 212", "title": "Computer Science III", "credits": 4.0 },
+        { "code": "MATH 231", "title": "Elements of Discrete Mathematics I", "credits": 4.0 },
+        { "code": "CS 314", "title": "Computer Organization", "credits": 4.0 },
+        { "code": "MATH 232", "title": "Elements of Discrete Mathematics II", "credits": 4.0 },
+        {
+          "or": [
+            { "code": "CS 322", "title": "Introduction to Software Engineering" },
+            { "code": "WR 320", "title": "Scientific and Technical Writing" },
+            { "code": "WR 321", "title": "Business Communications" },
+            { "code": "HC 301H", "title": "Research and Writing: [Topic]" }
+          ],
+          "credits": 4.0
+        },
+        {
+          "or": [
+            { "code": "MATH 253Z", "title": "Calculus: Sequences and Series" },
+            { "code": "MATH 341", "title": "Elementary Linear Algebra" },
+            { "code": "MATH 343", "title": "Statistical Models and Methods" },
+            { "code": "MATH 425", "title": "Statistical Methods I" },
+            { "code": "MATH 345M", "title": "Probability and Statistics for Data Science" }
+          ],
+          "credits": 4.0
+        },
+        { "code": "CS 313", "title": "Intermediate Data Structures", "credits": 4.0 },
+        {
+          "or": [
+            { "code": "MATH 253Z", "title": "Calculus: Sequences and Series" },
+            { "code": "MATH 341", "title": "Elementary Linear Algebra" },
+            { "code": "MATH 343", "title": "Statistical Models and Methods" },
+            { "code": "MATH 425", "title": "Statistical Methods I" },
+            { "code": "MATH 345M", "title": "Probability and Statistics for Data Science" }
+          ],
+          "credits": 4.0
+        },
+        {
+          "or": [
+            { "code": "WR 320", "title": "Scientific and Technical Writing" },
+            { "code": "WR 321", "title": "Business Communications" },
+            { "code": "HC 301H", "title": "Research and Writing: [Topic]" },
+            { "code": "CS 322", "title": "Introduction to Software Engineering" }
+          ],
+          "credits": 4.0
+        },
+        { "code": "CS 315", "title": "Intermediate Algorithms", "credits": 4.0 },
+        { "code": "CS 330", "title": "C/C++ and Unix", "credits": 4.0 },
+        { "code": "CS 415", "title": "Operating Systems", "credits": 4.0 },
+        { "code": "PHIL 223", "title": "Data Ethics", "credits": 4.0 },
+        { "code": "CS 425", "title": "Principles of Programming Languages", "credits": 4.0 },
+        { "code": "CS 422", "title": "Software Methodology I", "credits": 4.0 }
+      ]
+    },
+    {
+      "name": "Bachelor of Science in Physics",
+      "courses": [
+        { "code": "PHYS 251", "title": "Foundations of Physics I", "credits": 4.0 },
+        { "code": "PHYS 290", "title": "Foundations of Physics Laboratory", "credits": 1.0 },
+        { "code": "CH 221Z", "title": "General Chemistry I", "credits": 4.0 },
+        { "code": "MATH 251Z", "title": "Differential Calculus", "credits": 4.0 },
+        { "code": "WR 121Z", "title": "Composition I", "credits": 4.0 },
+        { "code": "PHYS 252", "title": "Foundations of Physics II", "credits": 4.0 },
+        { "code": "PHYS 290", "title": "Foundations of Physics Laboratory", "credits": 1.0 },
+        { "code": "CH 222Z", "title": "General Chemistry II", "credits": 4.0 },
+        { "code": "MATH 252Z", "title": "Integral Calculus", "credits": 4.0 },
+        { "code": "WR 122Z", "title": "Composition II", "credits": 4.0 },
+        { "code": "PHYS 253", "title": "Foundations of Physics III", "credits": 4.0 },
+        { "code": "PHYS 290", "title": "Foundations of Physics Laboratory", "credits": 1.0 },
+        { "code": "MATH 253Z", "title": "Calculus: Sequences and Series", "credits": 4.0 },
+        { "code": "CS 210", "title": "Computer Science I", "credits": 4.0 },
+        { "code": "PHYS 351", "title": "Foundations of Physics II", "credits": 4.0 },
+        { "code": "PHYS 391", "title": "Physics Experimentation Data Analysis Laboratory", "credits": 4.0 },
+        { "code": "MATH 281", "title": "Several-Variable Calculus I", "credits": 4.0 },
+        { "code": "PHYS 352", "title": "Thermal Physics and Statistical Mechanics I", "credits": 4.0 },
+        { "code": "MATH 282", "title": "Several-Variable Calculus II", "credits": 4.0 },
+        { "code": "PHYS 353", "title": "Thermal Physics and Statistical Mechanics II", "credits": 4.0 },
+        { "code": "MATH 256", "title": "Introduction to Differential Equations", "credits": 4.0 },
+        { "code": "PHYS 412", "title": "Electricity and Magnetism I", "credits": 4.0 },
+        { "code": "PHYS 411", "title": "Mechanics", "credits": 4.0 },
+        { "code": "PHYS 413", "title": "Electricity and Magnetism II", "credits": 4.0 },
+        { "code": "PHYS 422", "title": "Electromagnetism", "credits": 4.0 },
+        { "code": "PHYS 414", "title": "Quantum Physics", "credits": 4.0 },
+        { "code": "PHYS 415", "title": "Quantum Physics", "credits": 4.0 },
+        { "code": "PHYS 431", "title": "Analog Electronics", "credits": 4.0 },
+        { "code": "PHYS 417", "title": "Topics in Quantum Physics", "credits": 4.0 },
+        { "code": "PHYS 432", "title": "Digital Electronics", "credits": 4.0 }
+      ]
+    }
+  ]
+}
