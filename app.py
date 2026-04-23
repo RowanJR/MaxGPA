@@ -55,7 +55,10 @@ def home():
     return flask.render_template('index.html')
 
 @app.route("/get_class_list")
-def get_class_list(degreeplan, startdate, enddate):
+def get_class_list():
+
+    startdate = "Winter 2015"
+    enddate = "Spring 2018"
 
     ret = {
         "PHYS 101" : get_class_info("PHYS", 101, startdate, enddate), 
@@ -72,6 +75,29 @@ def get_class_info(subject, number, startdate, enddate):
         "NUMB": number,
         "$or": dateinterval
     }))
+
+    professors = {}
+
+    for result in results:
+        if result["INSTRUCTOR"] not in professors:
+            professors[result["INSTRUCTOR"]] = {"A" : 0, "B" : 0, "C" : 0, "DNF" : 0}
+        
+        professors[result["INSTRUCTOR"]]["A"] += int(result["A"])
+        professors[result["INSTRUCTOR"]]["A"] += int(result["AP"])
+        professors[result["INSTRUCTOR"]]["A"] += int(result["AM"])
+        professors[result["INSTRUCTOR"]]["B"] += int(result["B"])
+        professors[result["INSTRUCTOR"]]["B"] += int(result["BP"])
+        professors[result["INSTRUCTOR"]]["B"] += int(result["BM"])
+        professors[result["INSTRUCTOR"]]["C"] += int(result["C"])
+        professors[result["INSTRUCTOR"]]["C"] += int(result["CP"])
+        professors[result["INSTRUCTOR"]]["C"] += int(result["CM"])
+        professors[result["INSTRUCTOR"]]["DNF"] += int(result["D"])
+        professors[result["INSTRUCTOR"]]["DNF"] += int(result["DP"])
+        professors[result["INSTRUCTOR"]]["DNF"] += int(result["DM"])
+        professors[result["INSTRUCTOR"]]["DNF"] += int(result["F"])
+
+    for professor in professors:
+        pass
 
     ret = [
         { "professor" : "john smith", "A" : 0.50, "B" : 0.25, "C" : 0.2, "DNF" : 0.05 },
