@@ -54,14 +54,15 @@ def home():
 
     return flask.render_template('index.html')
 
-def get_class_list(classlist, startdate, enddate):
+@app.route("/get_class_list")
+def get_class_list(degreeplan, startdate, enddate):
 
     ret = {
         "PHYS 101" : get_class_info("PHYS", 101, startdate, enddate), 
         "MATH 101" : get_class_info("MATH", 101, startdate, enddate)
     }
 
-    return ret
+    return flask.jsonify(ret)
 
 def get_class_info(subject, number, startdate, enddate):
     dateinterval = date_interval(startdate, enddate)
@@ -71,8 +72,6 @@ def get_class_info(subject, number, startdate, enddate):
         "NUMB": number,
         "$or": dateinterval
     }))
-
-    
 
     ret = [
         { "professor" : "john smith", "A" : 0.50, "B" : 0.25, "C" : 0.2, "DNF" : 0.05 },
