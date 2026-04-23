@@ -61,7 +61,7 @@ def get_class_list(classlist, startdate, enddate):
         "MATH 101" : get_class_info("MATH", 101, startdate, enddate)
     }
 
-    return
+    return ret
 
 def get_class_info(subject, number, startdate, enddate):
     dateinterval = date_interval(startdate, enddate)
