@@ -76,27 +76,27 @@ def get_class_info(subject, number, startdate, enddate):
         "$or": dateinterval
     }))
 
-    professors = {}
+    intermed_professors = {}
 
     for result in results:
-        if result["INSTRUCTOR"] not in professors:
-            professors[result["INSTRUCTOR"]] = {"A" : 0, "B" : 0, "C" : 0, "DNF" : 0}
+        if result["INSTRUCTOR"] not in intermed_professors:
+            intermed_professors[result["INSTRUCTOR"]] = {"A" : 0, "B" : 0, "C" : 0, "DNF" : 0}
         
-        professors[result["INSTRUCTOR"]]["A"] += int(result["A"])
-        professors[result["INSTRUCTOR"]]["A"] += int(result["AP"])
-        professors[result["INSTRUCTOR"]]["A"] += int(result["AM"])
-        professors[result["INSTRUCTOR"]]["B"] += int(result["B"])
-        professors[result["INSTRUCTOR"]]["B"] += int(result["BP"])
-        professors[result["INSTRUCTOR"]]["B"] += int(result["BM"])
-        professors[result["INSTRUCTOR"]]["C"] += int(result["C"])
-        professors[result["INSTRUCTOR"]]["C"] += int(result["CP"])
-        professors[result["INSTRUCTOR"]]["C"] += int(result["CM"])
-        professors[result["INSTRUCTOR"]]["DNF"] += int(result["D"])
-        professors[result["INSTRUCTOR"]]["DNF"] += int(result["DP"])
-        professors[result["INSTRUCTOR"]]["DNF"] += int(result["DM"])
-        professors[result["INSTRUCTOR"]]["DNF"] += int(result["F"])
+        intermed_professors[result["INSTRUCTOR"]]["A"] += int(result["A"])
+        intermed_professors[result["INSTRUCTOR"]]["A"] += int(result["AP"])
+        intermed_professors[result["INSTRUCTOR"]]["A"] += int(result["AM"])
+        intermed_professors[result["INSTRUCTOR"]]["B"] += int(result["B"])
+        intermed_professors[result["INSTRUCTOR"]]["B"] += int(result["BP"])
+        intermed_professors[result["INSTRUCTOR"]]["B"] += int(result["BM"])
+        intermed_professors[result["INSTRUCTOR"]]["C"] += int(result["C"])
+        intermed_professors[result["INSTRUCTOR"]]["C"] += int(result["CP"])
+        intermed_professors[result["INSTRUCTOR"]]["C"] += int(result["CM"])
+        intermed_professors[result["INSTRUCTOR"]]["DNF"] += int(result["D"])
+        intermed_professors[result["INSTRUCTOR"]]["DNF"] += int(result["DP"])
+        intermed_professors[result["INSTRUCTOR"]]["DNF"] += int(result["DM"])
+        intermed_professors[result["INSTRUCTOR"]]["DNF"] += int(result["F"])
 
-    for professor in professors:
+    for professor in intermed_professors:
         pass
 
     ret = [
