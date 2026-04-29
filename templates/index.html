@@ -79,12 +79,19 @@
       <p id="report-subtitle"></p>
     </div>
 
-    <div class="legend" id="legend">
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--green-light)"></div>A</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--blue)"></div>B</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--amber)"></div>C</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:var(--red)"></div>DNF</div>
+    <div class="legend-row">
+      <div class="legend" id="legend">
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--green)"></div>A</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--blue)"></div>B</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--amber)"></div>C</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--red)"></div>DNF</div>
+      </div>
+      <div class="best-path-controls" id="best-path-controls">
+        <button class="btn-best-path" id="btn-best-path" onclick="handleBestPath()">Best Path</button>
+      </div>
     </div>
+
+    <div class="best-path-panel" id="best-path-panel"></div>
 
     <div id="course-list"></div>
   </main>

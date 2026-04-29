@@ -6,6 +6,8 @@ const MAJOR_LABELS = {
   geog_bs:     'BS Physics',
 };
 
+let bestPathMode = false;
+let lastData     = null;
 
 function showState(name) {
   ['empty', 'loading', 'error'].forEach(s => {
@@ -16,6 +18,10 @@ function showState(name) {
 function showReport(visible) {
   document.getElementById('report-meta').classList.toggle('visible', visible);
   document.getElementById('legend').classList.toggle('visible', visible);
+  document.getElementById('best-path-controls').classList.toggle('visible', visible);
+  if (!visible) {
+    document.getElementById('best-path-panel').classList.remove('visible');
+  }
 }
 
 function renderSkeletons(count = 4) {
@@ -62,11 +68,20 @@ function renderBarGroup(gradeData) {
     </div>`;
 }
 
-function renderCourseCard(course, delay) {
-  const instructorCols = (course.instructors || []).map(inst => `
-    <div class="chart-block">
+function renderCourseCard(course, delay, bestPath) {
+  let instructors = course.instructors || [];
+
+  if (bestPath) {
+    const allInst = instructors.find(i => i.name === 'All Instructors');
+    const best    = instructors.find(i => i.name !== 'All Instructors');
+    instructors   = [allInst, best].filter(Boolean);
+  }
+
+  const instructorCols = instructors.map(inst => `
+    <div class="chart-block${inst.name !== 'All Instructors' && bestPath ? ' best-pick' : ''}">
       ${renderBarGroup(inst.grades)}
       <div class="chart-instructor" title="${inst.name}">${inst.name}</div>
+      ${inst.name !== 'All Instructors' && bestPath ? '<div class="best-badge">Best</div>' : ''}
     </div>
   `).join('');
 
@@ -81,7 +96,33 @@ function renderCourseCard(course, delay) {
     </div>`;
 }
 
-function renderReport(data) {
+function renderBestPathSummary(data) {
+  const allCourses = data.terms.flatMap(t => t.courses);
+  const rows = allCourses.map(course => {
+    const best = (course.instructors || []).find(i => i.name !== 'All Instructors');
+    const pctA = best ? best.grades.A : null;
+    return `
+      <tr>
+        <td><span class="course-code">${course.code}</span></td>
+        <td>${course.title}</td>
+        <td>${best ? best.name : '—'}</td>
+        <td class="pct-cell">${pctA !== null ? `<span class="pct-a">${pctA}%</span>` : '—'}</td>
+      </tr>`;
+  }).join('');
+
+  document.getElementById('best-path-panel').innerHTML = `
+    <h3 class="bp-heading">Recommended Instructor Per Course</h3>
+    <p class="bp-sub">Instructor with the highest % A in the selected year range.</p>
+    <table class="bp-table">
+      <thead>
+        <tr><th>Course</th><th>Title</th><th>Best Instructor</th><th>% A</th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  document.getElementById('best-path-panel').classList.add('visible');
+}
+
+function renderReport(data, bestPath) {
   const list = document.getElementById('course-list');
   list.innerHTML = '';
 
@@ -104,7 +145,7 @@ function renderReport(data) {
 
     term.courses.forEach(course => {
       const wrapper = document.createElement('div');
-      wrapper.innerHTML = renderCourseCard(course, delay);
+      wrapper.innerHTML = renderCourseCard(course, delay, bestPath);
       list.appendChild(wrapper.firstElementChild);
       delay += 40;
     });
@@ -113,6 +154,23 @@ function renderReport(data) {
   document.getElementById('report-title').textContent = data.major;
   document.getElementById('report-subtitle').textContent =
     `Grade data ${data.years} · Generated ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+}
+
+function handleBestPath() {
+  if (!lastData) return;
+  bestPathMode = !bestPathMode;
+
+  const btn = document.getElementById('btn-best-path');
+  btn.classList.toggle('active', bestPathMode);
+  btn.textContent = bestPathMode ? 'Best Path: ON' : 'Best Path';
+
+  renderReport(lastData, bestPathMode);
+
+  if (bestPathMode) {
+    renderBestPathSummary(lastData);
+  } else {
+    document.getElementById('best-path-panel').classList.remove('visible');
+  }
 }
 
 async function handleGenerate() {
@@ -125,6 +183,11 @@ async function handleGenerate() {
     return;
   }
 
+  bestPathMode = false;
+  document.getElementById('btn-best-path').classList.remove('active');
+  document.getElementById('btn-best-path').textContent = 'Best Path';
+  document.getElementById('best-path-panel').classList.remove('visible');
+
   const btn = document.getElementById('btn-generate');
   btn.disabled = true;
   btn.textContent = 'Loading…';
@@ -136,9 +199,10 @@ async function handleGenerate() {
 
   try {
     const data = await fetchMajorData(major, yearFrom, yearTo);
+    lastData = data;
     showState(null);
     showReport(true);
-    renderReport(data);
+    renderReport(data, false);
   } catch (err) {
     showState('error');
     document.getElementById('error-message').textContent = err.message;
