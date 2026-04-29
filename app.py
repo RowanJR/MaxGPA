@@ -1,7 +1,6 @@
 import os
-import flask
 import json
-from flask import Flask, redirect, url_for, request, render_template
+from flask import Flask, request, render_template, jsonify
 from pymongo import MongoClient
 
 app = Flask(__name__)
@@ -10,101 +9,147 @@ mongo_host = os.environ.get('DB_HOST', 'db')
 client = MongoClient(mongo_host, 27017)
 db = client.maxgpa
 
-season = {"Fall": 0, "Winter": 1, "Spring": 2, 0:"Fall", 1:"Winter", 2:"Spring"}
+MAJOR_MAP = {
+    "cs_bs":       "Bachelor of Science in Computer Science",
+    "bs_business": "Bachelor of Science in Business Administration",
+    "geog_bs":     "Bachelor of Science in Physics",
+}
+
+with open("degree_requirements.json") as f:
+    _degree_data = json.load(f)
+
+DEGREES = {d["name"]: d["courses"] for d in _degree_data["degrees"]}
 
 
-##returns a list of all terms between two specified terms
-def date_interval(startdate, enddate):
-    words = startdate.split()
-    startseason = words[0]
-    startyear = int(words[1])
-    words = enddate.split()
-    endseason = words[0]
-    endyear = int(words[1])
+def ay_to_terms(year_from, year_to):
+    """Return the set of TERM_DESC strings covered by AY year_from through AY year_to.
+    AY2016 = Fall 2016, Winter 2017, Spring 2017.
+    """
+    terms = set()
+    for ay in range(int(year_from), int(year_to) + 1):
+        terms.add(f"Fall {ay}")
+        terms.add(f"Winter {ay + 1}")
+        terms.add(f"Spring {ay + 1}")
+    return terms
 
-    #invalid interval
-    if(endyear < startyear):
+
+def to_pct(counts):
+    total = sum(counts.values())
+    if total == 0:
+        return {"A": 0, "B": 0, "C": 0, "DNF": 0}
+    return {k: round(v / total * 100, 1) for k, v in counts.items()}
+
+
+def get_class_info(subj, numb, valid_terms):
+    """Query MongoDB for a course and return per-instructor grade percentages
+    with an 'All Instructors' aggregate as the first entry, sorted by % A desc."""
+    results = list(db.course_grades.find({
+        "SUBJ": subj,
+        "NUMB": str(numb),
+        "TERM_DESC": {"$in": list(valid_terms)}
+    }))
+
+    if not results:
         return []
-    if(endyear == startyear and season[endseason] < season[startseason]):
-        return []
-    
-    returnlist = []
 
-    currentyear = startyear
-    currentseason = season[startseason]
+    per_inst = {}
+    all_totals = {"A": 0, "B": 0, "C": 0, "DNF": 0}
 
-    while(True):
-        returnlist.append({"TERM_DESC": season[currentseason] + " " + str(currentyear)})
+    for row in results:
+        inst = str(row.get("INSTRUCTOR", "Unknown")).strip()
+        if not inst:
+            inst = "Unknown"
+        if inst not in per_inst:
+            per_inst[inst] = {"A": 0, "B": 0, "C": 0, "DNF": 0}
 
-        currentseason += 1
+        a   = int(row.get("AP", 0)) + int(row.get("A", 0)) + int(row.get("AM", 0))
+        b   = int(row.get("BP", 0)) + int(row.get("B", 0)) + int(row.get("BM", 0))
+        c   = int(row.get("CP", 0)) + int(row.get("C", 0)) + int(row.get("CM", 0))
+        dnf = int(row.get("DP", 0)) + int(row.get("D", 0)) + int(row.get("DM", 0)) + int(row.get("F", 0))
 
-        if(currentseason >= 3):
-            currentyear += 1
-            currentseason = 0
+        per_inst[inst]["A"]   += a
+        per_inst[inst]["B"]   += b
+        per_inst[inst]["C"]   += c
+        per_inst[inst]["DNF"] += dnf
 
-        if((season[endseason] < currentseason and currentyear == endyear) or currentyear > endyear):
-            break
+        all_totals["A"]   += a
+        all_totals["B"]   += b
+        all_totals["C"]   += c
+        all_totals["DNF"] += dnf
 
-    return returnlist
+    instructors = [{"name": "All Instructors", "grades": to_pct(all_totals)}]
+
+    sorted_insts = sorted(per_inst.items(), key=lambda x: x[1]["A"], reverse=True)
+    for name, counts in sorted_insts:
+        instructors.append({"name": name, "grades": to_pct(counts)})
+
+    return instructors
+
+
+def resolve_course(entry, valid_terms):
+    """Handle both plain courses and 'or' alternatives. Returns a course dict."""
+    if "or" in entry:
+        for option in entry["or"]:
+            parts = option["code"].split()
+            subj, numb = parts[0], parts[1]
+            instructors = get_class_info(subj, numb, valid_terms)
+            if instructors:
+                return {
+                    "code": option["code"],
+                    "title": option["title"],
+                    "credits": entry.get("credits", 4),
+                    "instructors": instructors,
+                }
+        # No data found for any option — show first alternative with empty data
+        opt = entry["or"][0]
+        return {
+            "code": opt["code"],
+            "title": opt["title"],
+            "credits": entry.get("credits", 4),
+            "instructors": [],
+        }
+    else:
+        parts = entry["code"].split()
+        subj, numb = parts[0], parts[1]
+        return {
+            "code": entry["code"],
+            "title": entry["title"],
+            "credits": entry.get("credits", 4),
+            "instructors": get_class_info(subj, numb, valid_terms),
+        }
+
 
 @app.route("/")
 @app.route("/index")
 def home():
-    app.logger.debug("Main page entry")
+    return render_template("index.html")
 
-    return flask.render_template('index.html')
 
-@app.route("/get_class_list")
-def get_class_list():
+@app.route("/api/grades")
+def api_grades():
+    major_key = request.args.get("major", "")
+    year_from = request.args.get("year_from", "2016")
+    year_to   = request.args.get("year_to",   "2023")
 
-    startdate = "Winter 2015"
-    enddate = "Spring 2018"
+    major_name = MAJOR_MAP.get(major_key)
+    if not major_name or major_name not in DEGREES:
+        return jsonify({"error": "Unknown major"}), 400
 
-    ret = {
-        "PHYS 101" : get_class_info("PHYS", 101, startdate, enddate), 
-        "MATH 101" : get_class_info("MATH", 101, startdate, enddate)
-    }
+    valid_terms = ay_to_terms(year_from, year_to)
+    courses = [resolve_course(e, valid_terms) for e in DEGREES[major_name]]
 
-    return flask.jsonify(ret)
+    return jsonify({
+        "major": major_name,
+        "years": f"AY{year_from}–AY{year_to}",
+        "terms": [
+            {
+                "year": "Degree Sequence",
+                "term": "Required Courses",
+                "courses": courses,
+            }
+        ],
+    })
 
-def get_class_info(subject, number, startdate, enddate):
-    dateinterval = date_interval(startdate, enddate)
 
-    results = list(db.maxgpa.find({
-        "SUBJ": subject,
-        "NUMB": number,
-        "$or": dateinterval
-    }))
-
-    intermed_professors = {}
-
-    for result in results:
-        if result["INSTRUCTOR"] not in intermed_professors:
-            intermed_professors[result["INSTRUCTOR"]] = {"A" : 0, "B" : 0, "C" : 0, "DNF" : 0}
-        
-        intermed_professors[result["INSTRUCTOR"]]["A"] += int(result["A"])
-        intermed_professors[result["INSTRUCTOR"]]["A"] += int(result["AP"])
-        intermed_professors[result["INSTRUCTOR"]]["A"] += int(result["AM"])
-        intermed_professors[result["INSTRUCTOR"]]["B"] += int(result["B"])
-        intermed_professors[result["INSTRUCTOR"]]["B"] += int(result["BP"])
-        intermed_professors[result["INSTRUCTOR"]]["B"] += int(result["BM"])
-        intermed_professors[result["INSTRUCTOR"]]["C"] += int(result["C"])
-        intermed_professors[result["INSTRUCTOR"]]["C"] += int(result["CP"])
-        intermed_professors[result["INSTRUCTOR"]]["C"] += int(result["CM"])
-        intermed_professors[result["INSTRUCTOR"]]["DNF"] += int(result["D"])
-        intermed_professors[result["INSTRUCTOR"]]["DNF"] += int(result["DP"])
-        intermed_professors[result["INSTRUCTOR"]]["DNF"] += int(result["DM"])
-        intermed_professors[result["INSTRUCTOR"]]["DNF"] += int(result["F"])
-
-    for professor in intermed_professors:
-        pass
-
-    ret = [
-        { "professor" : "john smith", "A" : 0.50, "B" : 0.25, "C" : 0.2, "DNF" : 0.05 },
-        { "professor" : "jane doe", "A" : 0.05, "B" : 0.20, "C" : 0.25, "DNF" : 0.50 }
-    ]
-
-    return flask.jsonify(ret)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

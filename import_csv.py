@@ -29,7 +29,7 @@ import pandas as pd
 from pymongo import MongoClient
 
 # File and database configuration
-CSV_FILE = "pub_rec_master_f2015-u2025.csv"
+CSV_FILE = "pub_rec_master_w2016-f2025.csv"
 MONGO_URI = "mongodb://db:27017/"
 DB_NAME = "maxgpa"
 COLLECTION_NAME = "course_grades"

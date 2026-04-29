@@ -4,7 +4,7 @@ services:
     command: -u app.py
     working_dir: /app
     ports:
-      - "5000:5000"
+      - "5001:5000"
     links:
       - db
   db:
