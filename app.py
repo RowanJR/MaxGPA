@@ -43,9 +43,18 @@ def to_pct(counts):
 def get_class_info(subj, numb, valid_terms):
     """Query MongoDB for a course and return per-instructor grade percentages
     with an 'All Instructors' aggregate as the first entry, sorted by % A desc."""
+    numb = str(numb).strip()
+
+    number_options = {numb}
+
+    if numb.endswith("Z"):
+        number_options.add(numb[:-1])
+    else:
+        number_options.add(numb + "Z")
+
     results = list(db.course_grades.find({
         "SUBJ": subj,
-        "NUMB": str(numb),
+        "NUMB": {"$in": list(number_options)},
         "TERM_DESC": {"$in": list(valid_terms)}
     }))
 

@@ -1,12 +1,15 @@
 services:
   web:
     build: .
-    command: -u app.py
+    command: app.py
     working_dir: /app
     ports:
       - "5001:5000"
-    links:
+    depends_on:
       - db
+    volumes:
+      - .:/app
+
   db:
     image: mongo:6
     ports:
@@ -14,7 +17,9 @@ services:
 
   importer:
     build: .
-    command: import_csv.py
+    command: import_csv.py --yes
     working_dir: /app
     depends_on:
       - db
+    volumes:
+      - .:/app
