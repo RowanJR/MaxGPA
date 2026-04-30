@@ -245,11 +245,19 @@ main { margin-top: 1.5rem; }
 /*charts*/
 .charts-row {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  align-items: start;
 }
 
-.chart-block,
+.chart-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; 
+  height: auto;
+}
+
 .bar-col {
   display: flex;
   flex-direction: column;
@@ -259,9 +267,16 @@ main { margin-top: 1.5rem; }
 .chart-instructor {
   font-size: 11px;
   color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+  text-align: center;
+  line-height: 1.3;
+  max-width: 100%;
+  min-height: 3.9em;
+  display: flex;
+  align-items: flex-end; 
+  justify-content: center;
+  padding-bottom: 18px; 
 }
 
 .bar-group {
@@ -270,6 +285,7 @@ main { margin-top: 1.5rem; }
   gap: 2px;
   height: 60px;
   width: 100%;
+  flex-shrink: 0;
 }
 
 .bar-col {
@@ -324,7 +340,7 @@ main { margin-top: 1.5rem; }
 .chart-block.best-pick {
   background: var(--green-pale);
   border-radius: var(--r-sm);
-  padding: 4px;
+  padding: 0 4px;
   position: relative;
 }
 

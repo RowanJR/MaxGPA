@@ -79,9 +79,8 @@ function renderCourseCard(course, delay, bestPath) {
 
   const instructorCols = instructors.map(inst => `
     <div class="chart-block${inst.name !== 'All Instructors' && bestPath ? ' best-pick' : ''}">
-      ${renderBarGroup(inst.grades)}
       <div class="chart-instructor" title="${inst.name}">${inst.name}</div>
-      ${inst.name !== 'All Instructors' && bestPath ? '<div class="best-badge">Best</div>' : ''}
+      ${renderBarGroup(inst.grades)}
     </div>
   `).join('');
 
