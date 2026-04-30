@@ -132,6 +132,9 @@ def resolve_course(entry, valid_terms):
 @app.route("/")
 @app.route("/index")
 def home():
+    """Homepage. Data is displayed on homepage whenever a new request is sent 
+    with api_grades().
+    """
     return render_template("index.html")
 
 
