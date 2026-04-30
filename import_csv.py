@@ -31,10 +31,7 @@ import pandas as pd
 from pymongo import MongoClient
 
 # File and database configuration
-CSV_FILES = [
-    "pub_rec_master_f2015-u2025.csv",
-    "pub_rec_master_w2016-f2025.csv"
-]
+COURSE_GRADES_FOLDER = "Course_Grades"
 
 MONGO_URI = "mongodb://db:27017/"
 DB_NAME = "maxgpa"
@@ -96,24 +93,30 @@ def has_real_grade_data(row):
 
 def load_available_csvs():
     """
-    Loads all available CSV files.
-    - If both exist → combine them
-    - If one exists → use it
-    - If none exist → error
-    - Removes duplicate rows when both files contain overlapping data
+    Loads all CSV files from the Course_Grades folder.
+    - Loads every .csv file found in the folder
+    - Combines them into one DataFrame
+    - Removes duplicate rows
+    - Errors only if the folder is missing or contains no CSV files
     """
     dataframes = []
 
-    for csv_file in CSV_FILES:
-        if os.path.exists(csv_file):
-            print(f"Loading CSV file: {csv_file}")
-            df = pd.read_csv(csv_file, dtype={"NUMB": str})
-            dataframes.append(df)
-        else:
-            print(f"CSV file not found, skipping: {csv_file}")
+    if not os.path.isdir(COURSE_GRADES_FOLDER):
+        raise FileNotFoundError(f"Folder not found: {COURSE_GRADES_FOLDER}")
 
-    if not dataframes:
-        raise FileNotFoundError("No CSV files found.")
+    csv_files = [
+        file for file in os.listdir(COURSE_GRADES_FOLDER)
+        if file.lower().endswith(".csv")
+    ]
+
+    if not csv_files:
+        raise FileNotFoundError(f"No CSV files found in {COURSE_GRADES_FOLDER}")
+
+    for csv_file in csv_files:
+        path = os.path.join(COURSE_GRADES_FOLDER, csv_file)
+        print(f"Loading CSV file: {path}")
+        df = pd.read_csv(path, dtype={"NUMB": str})
+        dataframes.append(df)
 
     combined_df = pd.concat(dataframes, ignore_index=True)
 
