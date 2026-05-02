@@ -337,7 +337,7 @@ async function uploadCSV() {
       setUploadStatus(`Error: ${json.error || 'Upload failed.'}`, 'error');
     } else {
       setUploadStatus(
-        `✓ Imported ${json.rows_imported} rows from "${json.filename}". Duplicates removed: ${json.duplicates_removed}.`,
+        `Imported ${json.rows_imported} rows from "${json.filename}". Duplicates removed: ${json.duplicates_removed}.`,
         'success'
       );
       clearFile();
