@@ -6,7 +6,7 @@ MaxGPA is a program that allows a user to easily query a large set of grade data
 
 To use the MaxGPA program, you must first ensure docker is installed.
 
-Navigate to the folder containing MaxGPA and run the command "docker compose up". Once the docker file has finished compiling, go to http://172.18.0.4:5000 (or http://127.0.0.1:5000/ if you encounter errors) on any web browser to access the locally hosted HTML. Here, you'll see options for the years you'd like to search, and the major you want to display information for. Entering these and pressing submit will display the data in easily readable graphs.
+Navigate to the folder containing MaxGPA and run the command "docker compose up". Once the docker file has finished compiling, go to http://127.0.0.1:5001/ on any web browser to access the locally hosted HTML. Here, you'll see options for the years you'd like to search, and the major you want to display information for. Entering these and pressing submit will display the data in easily readable graphs.
 
 You can end the process by pressing ctrl+c in the terminal running docker, or running the "docker stop" command on the running containers. Unwanted docker images can be removed with "docker rmi" and "docker prune".
 
