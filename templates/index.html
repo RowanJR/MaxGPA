@@ -9,9 +9,40 @@
 <body>
 
   <header>
-    <div class="logo">Max<em>GPA</em></div>
+    <div class="logo-group">
+      <div class="logo">Max<em>GPA</em></div>
+      <button class="btn-admin-toggle" id="btn-admin-toggle" onclick="toggleAdmin()">Admin</button>
+    </div>
     <div class="header-meta">University of Oregon · Grade Explorer</div>
   </header>
+
+  <!-- Admin Panel -->
+  <div class="admin-panel" id="admin-panel">
+    <div class="admin-inner">
+      <div class="admin-header">
+        <span class="admin-title">Admin Panel</span>
+      </div>
+      <div class="admin-upload-area">
+        <input type="file" id="csv-file-input" accept=".csv" style="display:none" onchange="handleFileSelected(event)" />
+        <div class="upload-drop-zone" id="upload-drop-zone"
+             onclick="document.getElementById('csv-file-input').click()"
+             ondragover="handleDragOver(event)"
+             ondragleave="handleDragLeave(event)"
+             ondrop="handleDrop(event)">
+          <div class="upload-icon"></div>
+          <div class="upload-label">Drop a CSV file here or <span class="upload-link">click to browse</span></div>
+          <div class="upload-hint">Must match the grade data format (SUBJ, NUMB, INSTRUCTOR, TERM_DESC, grade columns…)</div>
+        </div>
+        <div class="upload-file-preview" id="upload-file-preview" style="display:none">
+          <span class="file-icon"></span>
+          <span id="upload-filename"></span>
+          <button class="btn-clear-file" onclick="clearFile()">✕</button>
+        </div>
+        <button class="btn-upload" id="btn-upload" onclick="uploadCSV()" disabled>Upload CSV</button>
+        <div class="upload-status" id="upload-status"></div>
+      </div>
+    </div>
+  </div>
 
   <div class="controls">
     <div class="field">
@@ -28,23 +59,11 @@
       <label>Academic years</label>
       <div class="year-pair">
         <select id="year-from">
-          <option value="2016">AY 2016</option>
-          <option value="2017">AY 2017</option>
-          <option value="2018">AY 2018</option>
-          <option value="2019" selected>AY 2019</option>
-          <option value="2020">AY 2020</option>
-          <option value="2021">AY 2021</option>
-          <option value="2022">AY 2022</option>
+          <option value="">Loading…</option>
         </select>
         <span class="year-sep">–</span>
         <select id="year-to">
-          <option value="2017">AY 2017</option>
-          <option value="2018">AY 2018</option>
-          <option value="2019">AY 2019</option>
-          <option value="2020">AY 2020</option>
-          <option value="2021">AY 2021</option>
-          <option value="2022">AY 2022</option>
-          <option value="2023" selected>AY 2023</option>
+          <option value="">Loading…</option>
         </select>
       </div>
     </div>
@@ -63,7 +82,8 @@
 
     <!-- Loading state -->
     <div class="state-box" id="state-loading">
-      <div id="skeleton-area"></div>
+      <div class="icon">⏳</div>
+      <p>Loading grade data…</p>
     </div>
 
     <!-- Error state -->

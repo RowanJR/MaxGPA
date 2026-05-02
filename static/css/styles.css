@@ -7,18 +7,18 @@
 }
 
 :root {
-  /* Colors — brand */
+  /* base colors */
   --green:      #1D9E75;
   --green-dark: #085041;
   --green-mid:  #0F6E56;
   --green-pale: #E1F5EE;
 
-  /* Colors — accents */
+  /* accent colors */
   --blue:  #378ADD;
   --amber: #EF9F27;
   --red:   #E24B4A;
 
-  /* Colors — neutrals */
+  /* basic colors */
   --ink:    #1a1a18;
   --muted:  #5F5E5A;
   --faint:  #B4B2A9;
@@ -26,7 +26,7 @@
   --card:   #fff;
   --border: rgba(0, 0, 0, 0.1);
 
-  /* Border radii */
+  /* Border radius */
   --r-sm: 6px;
   --r-md: 10px;
   --r-lg: 14px;
@@ -54,6 +54,13 @@ header {
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
+  z-index: 100;
+}
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .logo {
@@ -70,6 +77,173 @@ header {
   font: 12px var(--mono);
   color: var(--muted);
 }
+
+/* Admin toggle button */
+.btn-admin-toggle {
+  font: 11px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.btn-admin-toggle:hover,
+.btn-admin-toggle.active {
+  color: var(--green-dark);
+  border-color: var(--green);
+  background: var(--green-pale);
+}
+
+.btn-admin-toggle.active {
+  font-weight: 600;
+}
+
+/* Admin panel */
+.admin-panel {
+  display: none;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  animation: slideDown 0.2s ease;
+}
+
+.admin-panel.visible {
+  display: block;
+}
+
+.admin-inner {
+  max-width: 960px;
+  margin: auto;
+  padding: 1.25rem 1.5rem;
+}
+
+.admin-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.admin-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.admin-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.admin-upload-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Drop zone */
+.upload-drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.upload-drop-zone:hover,
+.upload-drop-zone.drag-over {
+  border-color: var(--green);
+  background: var(--green-pale);
+}
+
+.upload-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+  opacity: 0.6;
+}
+
+.upload-label {
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.upload-link {
+  color: var(--green);
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.upload-hint {
+  font: 11px var(--mono);
+  color: var(--faint);
+}
+
+/* File preview */
+.upload-file-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--green-pale);
+  border: 1px solid var(--green);
+  border-radius: var(--r-md);
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.file-icon { font-size: 16px; }
+
+.upload-file-preview span:nth-child(2) {
+  flex: 1;
+  font: 12px var(--mono);
+  color: var(--green-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-clear-file {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.btn-clear-file:hover { color: var(--red); }
+
+/* Upload button */
+.btn-upload {
+  align-self: flex-start;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.btn-upload:hover:not(:disabled)  { background: var(--green-mid); }
+.btn-upload:disabled { background: var(--faint); cursor: not-allowed; }
+
+/* Upload status messages */
+.upload-status {
+  font-size: 13px;
+  min-height: 20px;
+}
+
+.upload-status.success { color: var(--green-dark); }
+.upload-status.error   { color: var(--red); }
+.upload-status.loading { color: var(--muted); }
 
 /*controls*/
 .controls,
@@ -205,16 +379,14 @@ main { margin-top: 1.5rem; }
 
 
 /*cards*/
-.course-card,
-.skeleton-card {
+.course-card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   padding: 1rem;
   margin-bottom: 10px;
+  animation: fade 0.25s ease;
 }
-
-.course-card { animation: fade 0.25s ease; }
 
 @keyframes fade {
   from {
@@ -254,14 +426,15 @@ main { margin-top: 1.5rem; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; 
-  height: auto;
+  justify-content: flex-start;
 }
 
 .bar-col {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 18px;
+  flex: 1;
 }
 
 .chart-instructor {
@@ -286,11 +459,6 @@ main { margin-top: 1.5rem; }
   height: 60px;
   width: 100%;
   flex-shrink: 0;
-}
-
-.bar-col {
-  max-width: 18px;
-  flex: 1;
 }
 
 .bar-fill {
@@ -341,19 +509,6 @@ main { margin-top: 1.5rem; }
   background: var(--green-pale);
   border-radius: var(--r-sm);
   padding: 0 4px;
-  position: relative;
-}
-
-.best-badge {
-  font: 10px var(--mono);
-  color: var(--green-dark);
-  background: var(--green-pale);
-  border: 1px solid var(--green);
-  border-radius: 4px;
-  padding: 1px 5px;
-  margin-top: 3px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 /* Best path summary panel */

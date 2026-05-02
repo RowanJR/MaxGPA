@@ -24,17 +24,6 @@ function showReport(visible) {
   }
 }
 
-function renderSkeletons(count = 4) {
-  const area = document.getElementById('skeleton-area');
-  area.innerHTML = Array.from({ length: count }, () => `
-    <div class="skeleton-card">
-      <div class="skel skel-title"></div>
-      <div class="skel skel-bars"></div>
-    </div>
-  `).join('');
-  document.getElementById('state-loading').classList.add('visible');
-}
-
 async function fetchMajorData(major, yearFrom, yearTo) {
   const params = new URLSearchParams({ major, year_from: yearFrom, year_to: yearTo });
   const res = await fetch(`${API_BASE}/api/grades?${params}`);
@@ -193,7 +182,6 @@ async function handleGenerate() {
 
   showReport(false);
   showState('loading');
-  renderSkeletons(5);
   document.getElementById('course-list').innerHTML = '';
 
   try {
@@ -219,3 +207,147 @@ document.getElementById('year-from').addEventListener('change', function () {
     to.value = String(parseInt(this.value) + 1);
   }
 });
+
+// ─── Year Dropdown Population ─────────────────────────────────────────────────
+
+async function populateYears() {
+  try {
+    const res  = await fetch('/api/years');
+    const data = await res.json();
+    const years = data.years;  // sorted array of AY start ints, e.g. [2016, 2017, …]
+
+    if (!years || years.length === 0) return;
+
+    const fromSel = document.getElementById('year-from');
+    const toSel   = document.getElementById('year-to');
+
+    // Remember current selections (or fall back to sensible defaults)
+    const prevFrom = parseInt(fromSel.value) || years[Math.max(0, years.length - 5)];
+    const prevTo   = parseInt(toSel.value)   || years[years.length - 1];
+
+    // Rebuild year-from: all years except the last (can't have a range of 0)
+    fromSel.innerHTML = years.slice(0, -1).map(y =>
+      `<option value="${y}"${y === prevFrom ? ' selected' : ''}>AY ${y}</option>`
+    ).join('');
+
+    // Rebuild year-to: all years except the first
+    toSel.innerHTML = years.slice(1).map(y =>
+      `<option value="${y}"${y === prevTo ? ' selected' : ''}>AY ${y}</option>`
+    ).join('');
+
+    // Ensure from < to after rebuild
+    const fromVal = parseInt(fromSel.value);
+    const toVal   = parseInt(toSel.value);
+    if (fromVal >= toVal) {
+      toSel.value = String(years[years.indexOf(fromVal) + 1] ?? years[years.length - 1]);
+    }
+
+  } catch (err) {
+    console.error('Could not load year list:', err);
+  }
+}
+
+// Populate on page load
+populateYears();
+
+// ─── Admin Panel ──────────────────────────────────────────────────────────────
+
+let selectedFile = null;
+
+function toggleAdmin() {
+  const panel = document.getElementById('admin-panel');
+  const btn   = document.getElementById('btn-admin-toggle');
+  const open  = panel.classList.toggle('visible');
+  btn.classList.toggle('active', open);
+  if (!open) {
+    clearFile();
+    setUploadStatus('', '');
+  }
+}
+
+function handleFileSelected(event) {
+  const file = event.target.files[0];
+  if (file) setFile(file);
+}
+
+function setFile(file) {
+  selectedFile = file;
+  document.getElementById('upload-filename').textContent = file.name;
+  document.getElementById('upload-file-preview').style.display = 'flex';
+  document.getElementById('upload-drop-zone').style.display = 'none';
+  document.getElementById('btn-upload').disabled = false;
+  setUploadStatus('', '');
+}
+
+function clearFile() {
+  selectedFile = null;
+  document.getElementById('csv-file-input').value = '';
+  document.getElementById('upload-file-preview').style.display = 'none';
+  document.getElementById('upload-drop-zone').style.display = 'block';
+  document.getElementById('btn-upload').disabled = true;
+  setUploadStatus('', '');
+}
+
+function setUploadStatus(message, type) {
+  const el = document.getElementById('upload-status');
+  el.textContent = message;
+  el.className = `upload-status${type ? ' ' + type : ''}`;
+}
+
+function handleDragOver(event) {
+  event.preventDefault();
+  document.getElementById('upload-drop-zone').classList.add('drag-over');
+}
+
+function handleDragLeave(event) {
+  document.getElementById('upload-drop-zone').classList.remove('drag-over');
+}
+
+function handleDrop(event) {
+  event.preventDefault();
+  document.getElementById('upload-drop-zone').classList.remove('drag-over');
+  const file = event.dataTransfer.files[0];
+  if (file && file.name.toLowerCase().endsWith('.csv')) {
+    setFile(file);
+  } else {
+    setUploadStatus('Please drop a .csv file.', 'error');
+  }
+}
+
+async function uploadCSV() {
+  if (!selectedFile) return;
+
+  const btn = document.getElementById('btn-upload');
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+  setUploadStatus('Uploading and importing data…', 'loading');
+
+  const formData = new FormData();
+  formData.append('file', selectedFile);
+
+  try {
+    const res = await fetch('/api/admin/upload-csv', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      setUploadStatus(`Error: ${json.error || 'Upload failed.'}`, 'error');
+    } else {
+      setUploadStatus(
+        `✓ Imported ${json.rows_imported} rows from "${json.filename}". Duplicates removed: ${json.duplicates_removed}.`,
+        'success'
+      );
+      clearFile();
+      populateYears();  // Refresh dropdowns in case new years were added
+    }
+  } catch (err) {
+    setUploadStatus(`Network error: ${err.message}`, 'error');
+    console.error('Admin upload error:', err);
+  } finally {
+    btn.disabled = !selectedFile;
+    btn.textContent = 'Upload CSV';
+  }
+}
