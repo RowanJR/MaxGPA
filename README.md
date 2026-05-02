@@ -1,9 +1,3 @@
-the current structure runs a docker container for the flask server and the mongo database. 
-
-To compile and run, execute "docker compose up" in the base directory. Stop it with ctrl+c, and make sure to remove old stopped containers with "docker containers prune" or "docker rm -f $(docker ps -aq)", then remove old images with "docker rmi -f $(docker images -aq)".
-
-once running, access localhost with  in your browser.
-
 ### Program Description
 
 MaxGPA is a program that allows a user to easily query a large set of grade data to determine which professors have the best historical grade distributions classes are searched by degree requirements; a degree requirement is selected, and the grade data of all professors who have taught each class required for that degree are displyed. 
