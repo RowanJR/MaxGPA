@@ -14,6 +14,7 @@ Authors:
 - Rowan Moore
 - Hayden Oelke
 - Caeleb Renner
+- Jake Seiberg
 
 Date Created:
 04/16/2026
