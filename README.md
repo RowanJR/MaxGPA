@@ -1,3 +1,7 @@
+### Authors
+
+Caeleb Renner, Hayden Oelke, Jake Seiberg, Rowan Moore
+
 ### Program Description
 
 MaxGPA is a program that allows a user to easily query a large set of grade data to determine which professors have the best historical grade distributions classes are searched by degree requirements; a degree requirement is selected, and the grade data of all professors who have taught each class required for that degree are displyed. 
