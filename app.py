@@ -50,11 +50,12 @@ mongo_host = os.environ.get('DB_HOST', 'db')
 client = MongoClient(mongo_host, 27017)
 db = client.maxgpa
 
-
 # ---------------------------------------------------------------------
 # Static Configuration Data
 # ---------------------------------------------------------------------
 
+# MAJOR_MAP is used to map the shortened major codes sent from the frontend 
+# javascript to full names for database querying
 MAJOR_MAP = {
     "cs_bs":       "Bachelor of Science in Computer Science",
     "bs_business": "Bachelor of Science in Business Administration",
@@ -64,6 +65,8 @@ MAJOR_MAP = {
 with open("degree_requirements.json") as f:
     _degree_data = json.load(f)
 
+# List of all degrees with all their courses. Generated from 
+# "degree_requirements.json" on startup
 DEGREES = {d["name"]: d["courses"] for d in _degree_data["degrees"]}
 
 
@@ -72,6 +75,10 @@ DEGREES = {d["name"]: d["courses"] for d in _degree_data["degrees"]}
 # ---------------------------------------------------------------------
 
 def ay_to_terms(year_from, year_to):
+    """
+    converts acedmeic "year_from" and "year_to" into a list of eact terms to be searched in the database
+    terms are laided out "Fall 2016"
+    """
     terms = set()
     for ay in range(int(year_from), int(year_to) + 1):
         terms.add(f"Fall {ay}")
@@ -81,6 +88,9 @@ def ay_to_terms(year_from, year_to):
 
 
 def to_pct(counts):
+    """
+    converts a list of integers representing grades acquired for a certain course into percentages
+    """
     total = sum(counts.values())
     if total == 0:
         return {"A": 0, "B": 0, "C": 0, "DNF": 0}
@@ -88,6 +98,12 @@ def to_pct(counts):
 
 
 def get_class_info(subj, numb, valid_terms):
+    """
+    queries the database to find a specific class during a set of terms and returns 
+    the average grades for each professor who has taught that course at least once
+    during that period as a list of dictionaries containing the instructor "name" key
+    and the grades as a percentage in an array with the "grades" key
+    """
     numb = str(numb).strip()
     number_options = {numb}
     if numb.endswith("Z"):
@@ -136,6 +152,11 @@ def get_class_info(subj, numb, valid_terms):
 
 
 def resolve_course(entry, valid_terms):
+    """
+    calls "get_class_info" and returns a formatted dict containing the
+    class code, title, credits, and list of instructors from get_class_info,
+    each with a "name" key and "grade" key with a list of grades
+    """
     if "or" in entry:
         for option in entry["or"]:
             subj, numb = option["code"].split()
@@ -171,11 +192,18 @@ def resolve_course(entry, valid_terms):
 @app.route("/")
 @app.route("/index")
 def home():
+    """
+    returns the default page when accessed in a web browser
+    """
     return render_template("index.html")
 
 
 @app.route("/api/years")
 def api_years():
+    """
+    returns a json list of all years currently present in the database to
+    be presented as options to the user
+    """
     term_descs = db.course_grades.distinct("TERM_DESC")
 
     ay_set = set()
@@ -204,6 +232,13 @@ def api_years():
 
 @app.route("/api/grades")
 def api_grades():
+    """
+    Requires parameters for major, year_from, and year_to. Searches the database for 
+    each class in the major to find the grade data for instructors. returns a json
+    with all courses present, with each course having a "code", "title", "credits", 
+    and "instructors" key, where instructors is a list of instructors, each with a 
+    "name" key and "grades" key, containing a list of grade data as percentages
+    """
     major_key = request.args.get("major", "")
     year_from = request.args.get("year_from", "2016")
     year_to   = request.args.get("year_to", "2023")
