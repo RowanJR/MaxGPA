@@ -1,3 +1,20 @@
+/* -------------------------------------------------------------------------------------
+// File:    styles.css
+// Purpose: This file contains the styles for the MaxGPA application.
+//
+// Created: 2025
+// Author: Jake Seiberg
+//
+// Modifications:
+//   2025-04-23 Jake Seiberg — Basic styles
+//   2025-04-30 Jake Seiberg — Added styles for the bar charts and data display
+//   2025-05-01 Jake Seiberg — Added best path styles
+//   2025-05-02 Jake Seiberg — Added admin panel styles
+//   2025-05-02 Jake Seiberg — Fixed various bugs relating to the spacing of text and graph elements
+// -------------------------------------------------------------------------------------
+*/
+
+/*reset*/
 *,
 *::before,
 *::after {
@@ -6,6 +23,7 @@
   padding: 0;
 }
 
+/*tokens*/
 :root {
   /* base colors */
   --green:      #1D9E75;
@@ -36,6 +54,7 @@
   --mono: ui-monospace, monospace;
 }
 
+/*body*/
 body {
   font: 14px var(--sans);
   background: var(--bg);
@@ -57,6 +76,7 @@ header {
   z-index: 100;
 }
 
+/* Logo */
 .logo-group {
   display: flex;
   align-items: center;
@@ -108,13 +128,13 @@ header {
   display: none;
   background: var(--card);
   border-bottom: 1px solid var(--border);
-  animation: slideDown 0.2s ease;
 }
 
 .admin-panel.visible {
   display: block;
 }
 
+/* Admin inner layout */
 .admin-inner {
   max-width: 960px;
   margin: auto;
@@ -138,6 +158,7 @@ header {
   color: var(--muted);
 }
 
+/* Upload area */
 .admin-upload-area {
   display: flex;
   flex-direction: column;
@@ -261,6 +282,7 @@ main {
   align-items: flex-end;
 }
 
+/*field*/
 .field {
   display: flex;
   flex-direction: column;
@@ -329,12 +351,14 @@ main { margin-top: 1.5rem; }
 
 .state-box.visible { display: block; }
 
+/*icon*/
 .icon {
   font-size: 30px;
   opacity: 0.4;
   margin-bottom: 0.5rem;
 }
 
+/*error text*/
 .err {
   color: var(--red);
   font-size: 13px;
@@ -385,14 +409,6 @@ main { margin-top: 1.5rem; }
   border-radius: var(--r-lg);
   padding: 1rem;
   margin-bottom: 10px;
-  animation: fade 0.25s ease;
-}
-
-@keyframes fade {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
 }
 
 /* Course header */
@@ -527,6 +543,7 @@ main { margin-top: 1.5rem; }
   margin-bottom: 0.75rem;
 }
 
+/* Best path table */
 .bp-table {
   width: 100%;
   border-collapse: collapse;
@@ -552,6 +569,7 @@ main { margin-top: 1.5rem; }
 .bp-table tr:last-child td { border-bottom: none; }
 .bp-table tr:hover td      { background: var(--green-pale); }
 
+/* Percentage cell */
 .pct-cell { text-align: right; }
 
 .pct-a {

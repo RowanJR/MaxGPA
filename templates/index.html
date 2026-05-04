@@ -1,3 +1,20 @@
+<!--
+-------------------------------------------------------------------------------------
+// File:    index.html
+// Purpose: This file contains the HTML structure for the MaxGPA application.
+//
+// Created: 2025
+// Author: Jake Seiberg
+//
+// Modifications:
+//   2025-04-23 Jake Seiberg — Basic structure
+//   2025-04-30 Jake Seiberg — Added implementation for the grade data display
+//   2025-05-01 Jake Seiberg — Added implementation for the best path mode
+//   2025-05-02 Jake Seiberg — Added implementation for the admin panel
+//   2025-05-02 Jake Seiberg — Fixed various bugs relating to the spacing of text and graph elements
+-------------------------------------------------------------------------------------
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +30,7 @@
       <div class="logo">Max<em>GPA</em></div>
       <button class="btn-admin-toggle" id="btn-admin-toggle" onclick="toggleAdmin()">Admin</button>
     </div>
-    <div class="header-meta">University of Oregon · Grade Explorer</div>
+    <div class="header-meta">University of Oregon Grade Explorer</div>
   </header>
 
   <!-- Admin Panel -->
@@ -51,7 +68,7 @@
         <option value="">— Select a major —</option>
         <option value="cs_bs">BS Computer Science</option>
         <option value="bs_business">BS Business Administration</option>
-        <option value="geog_bs">BS Physics</option>
+        <option value="phys_bs">BS Physics</option>
       </select>
     </div>
 
@@ -59,11 +76,11 @@
       <label>Academic years</label>
       <div class="year-pair">
         <select id="year-from">
-          <option value="">Loading…</option>
+          <option value="">Loading...</option>
         </select>
         <span class="year-sep">–</span>
         <select id="year-to">
-          <option value="">Loading…</option>
+          <option value="">Loading...</option>
         </select>
       </div>
     </div>

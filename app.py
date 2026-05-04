@@ -59,7 +59,7 @@ db = client.maxgpa  # reference to the maxgpa database
 MAJOR_MAP = {
     "cs_bs":       "Bachelor of Science in Computer Science",
     "bs_business": "Bachelor of Science in Business Administration",
-    "geog_bs":     "Bachelor of Science in Physics",
+    "phys_bs":     "Bachelor of Science in Physics",
 }
 
 with open("degree_requirements.json") as f:  # file handle for degree requirements JSON
